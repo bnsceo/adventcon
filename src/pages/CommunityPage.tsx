@@ -13,6 +13,7 @@ interface Post {
   created_at: string;
   user_id: string;
   comment_count: number;
+  hashtags: string[];
 }
 
 const CommunityPage = () => {
@@ -39,13 +40,26 @@ const CommunityPage = () => {
   });
 
   const createPost = useMutation({
-    mutationFn: async ({ title, content }: { title: string; content: string }) => {
+    mutationFn: async ({ 
+      title, 
+      content,
+      hashtags 
+    }: { 
+      title: string; 
+      content: string;
+      hashtags?: string[];
+    }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
       const { error } = await supabase
         .from('posts')
-        .insert([{ title, content, user_id: user.id }]);
+        .insert([{ 
+          title, 
+          content, 
+          user_id: user.id,
+          hashtags: hashtags || []
+        }]);
 
       if (error) throw error;
     },
@@ -55,7 +69,11 @@ const CommunityPage = () => {
   });
 
   const handleCreatePost = async (title: string, content: string) => {
-    await createPost.mutateAsync({ title, content });
+    // Extract hashtags from content
+    const hashtagRegex = /#[\w]+/g;
+    const hashtags = content.match(hashtagRegex)?.map(tag => tag.slice(1)) || [];
+    
+    await createPost.mutateAsync({ title, content, hashtags });
   };
 
   return (
@@ -97,6 +115,7 @@ const CommunityPage = () => {
               content={post.content}
               createdAt={post.created_at}
               commentCount={post.comment_count}
+              hashtags={post.hashtags}
             />
           ))}
         </section>

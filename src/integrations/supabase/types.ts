@@ -78,6 +78,7 @@ export type Database = {
         Row: {
           content: string
           created_at: string | null
+          hashtags: string[] | null
           id: string
           title: string
           updated_at: string | null
@@ -86,6 +87,7 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string | null
+          hashtags?: string[] | null
           id?: string
           title: string
           updated_at?: string | null
@@ -94,6 +96,7 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string | null
+          hashtags?: string[] | null
           id?: string
           title?: string
           updated_at?: string | null
@@ -104,30 +107,48 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
+          church_name: string | null
           church_role: string | null
           created_at: string | null
+          favorite_bible_verse: string | null
           full_name: string | null
           id: string
+          location: string | null
+          ministry_roles: string[] | null
           updated_at: string | null
           username: string
+          website_url: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
+          church_name?: string | null
           church_role?: string | null
           created_at?: string | null
+          favorite_bible_verse?: string | null
           full_name?: string | null
           id: string
+          location?: string | null
+          ministry_roles?: string[] | null
           updated_at?: string | null
           username: string
+          website_url?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
+          church_name?: string | null
           church_role?: string | null
           created_at?: string | null
+          favorite_bible_verse?: string | null
           full_name?: string | null
           id?: string
+          location?: string | null
+          ministry_roles?: string[] | null
           updated_at?: string | null
           username?: string
+          website_url?: string | null
         }
         Relationships: []
       }
