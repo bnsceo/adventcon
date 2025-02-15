@@ -1,9 +1,30 @@
 
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import DevotionalCard from "@/components/DevotionalCard";
 import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { data: session } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session;
+    },
+  });
+
+  const handleJoinCommunity = () => {
+    if (session) {
+      navigate('/community');
+    } else {
+      navigate('/auth');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -19,9 +40,9 @@ const Index = () => {
           <p className="text-lg text-muted-foreground mb-8">
             Connect with fellow believers, share your faith journey, and grow together in Christ.
           </p>
-          <button className="btn-primary">
-            Join Our Community
-          </button>
+          <Button onClick={handleJoinCommunity}>
+            {session ? "Go to Community" : "Join Our Community"}
+          </Button>
         </section>
 
         <section className="max-w-2xl mx-auto mb-16">
