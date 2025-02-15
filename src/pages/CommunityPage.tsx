@@ -12,6 +12,7 @@ interface Post {
   content: string;
   created_at: string;
   user_id: string;
+  comment_count: number;
 }
 
 const CommunityPage = () => {
@@ -22,11 +23,18 @@ const CommunityPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('posts')
-        .select('*')
+        .select(`
+          *,
+          comment_count:comments(count)
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as Post[];
+      
+      return data.map(post => ({
+        ...post,
+        comment_count: post.comment_count[0].count
+      })) as Post[];
     },
   });
 
@@ -84,13 +92,11 @@ const CommunityPage = () => {
           {posts?.map((post) => (
             <PostCard
               key={post.id}
+              id={post.id}
               title={post.title}
               content={post.content}
               createdAt={post.created_at}
-              commentCount={0}
-              onCommentClick={() => {
-                // TODO: Implement comments functionality
-              }}
+              commentCount={post.comment_count}
             />
           ))}
         </section>
