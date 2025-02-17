@@ -33,30 +33,48 @@ const UserProfilePage = () => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<Partial<Profile>>({});
 
-  // Check if user is authenticated
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+  // Check if user is authenticated and create profile if needed
+  const { data: session } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
         navigate('/auth');
+        return null;
       }
-    };
-    checkAuth();
-  }, [navigate]);
+      return session;
+    },
+  });
 
   const { data: profile, isLoading } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile', session?.user.id],
+    enabled: !!session?.user.id,
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!session?.user.id) throw new Error('Not authenticated');
 
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
-        .single();
+        .eq('id', session.user.id)
+        .maybeSingle();
 
       if (error) throw error;
+
+      // If no profile exists, create one
+      if (!data) {
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert([{
+            id: session.user.id,
+            username: session.user.email?.split('@')[0] || 'user',
+          }])
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        return newProfile as Profile;
+      }
+
       return data as Profile;
     },
   });
@@ -69,14 +87,13 @@ const UserProfilePage = () => {
 
   const updateProfile = useMutation({
     mutationFn: async (data: Partial<Profile>) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      if (!session?.user.id) throw new Error('Not authenticated');
 
       // Handle avatar upload if there's a new file
       let avatarUrl = data.avatar_url;
       if (avatarFile) {
         const fileExt = avatarFile.name.split('.').pop();
-        const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+        const filePath = `${session.user.id}/${Date.now()}.${fileExt}`;
         
         const { error: uploadError } = await supabase.storage
           .from('avatars')
@@ -94,7 +111,7 @@ const UserProfilePage = () => {
       const { error } = await supabase
         .from('profiles')
         .update({ ...data, avatar_url: avatarUrl })
-        .eq('id', user.id);
+        .eq('id', session.user.id);
 
       if (error) throw error;
     },
