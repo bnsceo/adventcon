@@ -1,11 +1,17 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { MessageSquare, Tag } from "lucide-react";
+import { MessageSquare, Tag, FileText, Image, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import CommentList from "./CommentList";
+
+interface Attachment {
+  url: string;
+  type: string;
+  name: string;
+}
 
 interface PostCardProps {
   id: string;
@@ -14,6 +20,7 @@ interface PostCardProps {
   createdAt: string;
   commentCount?: number;
   hashtags?: string[];
+  attachments?: Attachment[];
 }
 
 const PostCard = ({ 
@@ -22,9 +29,16 @@ const PostCard = ({
   content, 
   createdAt, 
   commentCount = 0,
-  hashtags = [] 
+  hashtags = [],
+  attachments = []
 }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
+
+  const getAttachmentIcon = (type: string) => {
+    if (type.startsWith('image/')) return <Image className="h-4 w-4" />;
+    if (type.startsWith('video/')) return <Video className="h-4 w-4" />;
+    return <FileText className="h-4 w-4" />;
+  };
 
   return (
     <Card className="mb-4">
@@ -36,6 +50,33 @@ const PostCard = ({
       </CardHeader>
       <CardContent>
         <p className="text-base text-card-foreground mb-4">{content}</p>
+        
+        {attachments.length > 0 && (
+          <div className="space-y-4 mb-4">
+            {attachments.map((attachment, index) => (
+              <div key={index}>
+                {attachment.type.startsWith('image/') ? (
+                  <img 
+                    src={attachment.url} 
+                    alt={attachment.name}
+                    className="rounded-lg max-h-96 w-full object-cover"
+                  />
+                ) : (
+                  <a
+                    href={attachment.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-primary hover:underline"
+                  >
+                    {getAttachmentIcon(attachment.type)}
+                    {attachment.name}
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        
         {hashtags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {hashtags.map((tag) => (

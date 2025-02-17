@@ -76,6 +76,7 @@ export type Database = {
       }
       posts: {
         Row: {
+          attachment_urls: Json | null
           content: string
           created_at: string | null
           hashtags: string[] | null
@@ -85,6 +86,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          attachment_urls?: Json | null
           content: string
           created_at?: string | null
           hashtags?: string[] | null
@@ -94,6 +96,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          attachment_urls?: Json | null
           content?: string
           created_at?: string | null
           hashtags?: string[] | null

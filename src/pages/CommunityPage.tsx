@@ -14,6 +14,11 @@ interface Post {
   user_id: string;
   comment_count: number;
   hashtags: string[];
+  attachment_urls: {
+    url: string;
+    type: string;
+    name: string;
+  }[];
 }
 
 const CommunityPage = () => {
@@ -43,14 +48,41 @@ const CommunityPage = () => {
     mutationFn: async ({ 
       title, 
       content,
-      hashtags 
+      hashtags,
+      files 
     }: { 
       title: string; 
       content: string;
       hashtags?: string[];
+      files: File[];
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
+
+      // Upload files first
+      const attachmentUrls = await Promise.all(
+        files.map(async (file) => {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${crypto.randomUUID()}.${fileExt}`;
+          const filePath = `${user.id}/${fileName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('post_attachments')
+            .upload(filePath, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('post_attachments')
+            .getPublicUrl(filePath);
+
+          return {
+            url: publicUrl,
+            type: file.type,
+            name: file.name
+          };
+        })
+      );
 
       const { error } = await supabase
         .from('posts')
@@ -58,7 +90,8 @@ const CommunityPage = () => {
           title, 
           content, 
           user_id: user.id,
-          hashtags: hashtags || []
+          hashtags: hashtags || [],
+          attachment_urls: attachmentUrls
         }]);
 
       if (error) throw error;
@@ -68,12 +101,12 @@ const CommunityPage = () => {
     },
   });
 
-  const handleCreatePost = async (title: string, content: string) => {
+  const handleCreatePost = async (title: string, content: string, files: File[]) => {
     // Extract hashtags from content
     const hashtagRegex = /#[\w]+/g;
     const hashtags = content.match(hashtagRegex)?.map(tag => tag.slice(1)) || [];
     
-    await createPost.mutateAsync({ title, content, hashtags });
+    await createPost.mutateAsync({ title, content, hashtags, files });
   };
 
   return (
@@ -116,6 +149,7 @@ const CommunityPage = () => {
               createdAt={post.created_at}
               commentCount={post.comment_count}
               hashtags={post.hashtags}
+              attachments={post.attachment_urls}
             />
           ))}
         </section>
