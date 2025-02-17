@@ -16,6 +16,10 @@ type Post = {
     type: string;
     name: string;
   }[];
+  profiles: {
+    username: string;
+    avatar_url: string | null;
+  };
 };
 
 export const usePosts = () => {
@@ -28,7 +32,8 @@ export const usePosts = () => {
         .from('posts')
         .select(`
           *,
-          comment_count:comments(count)
+          comment_count:comments(count),
+          profiles:user_id(username, avatar_url)
         `)
         .order('created_at', { ascending: false });
       
@@ -38,7 +43,8 @@ export const usePosts = () => {
         ...post,
         comment_count: post.comment_count[0].count,
         attachment_urls: post.attachment_urls as Post['attachment_urls'] || [],
-        hashtags: post.hashtags || []
+        hashtags: post.hashtags || [],
+        profiles: post.profiles
       })) as Post[];
     },
   });

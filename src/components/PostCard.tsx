@@ -1,10 +1,11 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { MessageSquare, Tag, FileText, Image, Video } from "lucide-react";
+import { MessageSquare, Tag, FileText, Image, Video, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CommentList from "./CommentList";
 
 interface Attachment {
@@ -21,6 +22,10 @@ interface PostCardProps {
   commentCount?: number;
   hashtags?: string[];
   attachments?: Attachment[];
+  profiles: {
+    username: string;
+    avatar_url: string | null;
+  };
 }
 
 const PostCard = ({ 
@@ -30,7 +35,8 @@ const PostCard = ({
   createdAt, 
   commentCount = 0,
   hashtags = [],
-  attachments = []
+  attachments = [],
+  profiles
 }: PostCardProps) => {
   const [showComments, setShowComments] = useState(false);
 
@@ -43,10 +49,21 @@ const PostCard = ({
   return (
     <Card className="mb-4">
       <CardHeader className="pb-3">
+        <div className="flex items-center space-x-3 mb-2">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={profiles.avatar_url || undefined} />
+            <AvatarFallback>
+              <User className="h-4 w-4" />
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="text-sm font-medium">{profiles.username}</p>
+            <p className="text-xs text-muted-foreground">
+              {format(new Date(createdAt), 'MMMM d, yyyy')}
+            </p>
+          </div>
+        </div>
         <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="text-sm text-muted-foreground">
-          {format(new Date(createdAt), 'MMMM d, yyyy')}
-        </p>
       </CardHeader>
       <CardContent>
         <p className="text-base text-card-foreground mb-4">{content}</p>
