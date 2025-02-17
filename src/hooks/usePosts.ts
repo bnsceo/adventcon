@@ -33,18 +33,23 @@ export const usePosts = () => {
         .select(`
           *,
           comment_count:comments(count),
-          profiles!posts_user_id_fkey(username, avatar_url)
+          profiles:profiles(username, avatar_url)
         `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
+      
+      if (!data) return [];
       
       return data.map(post => ({
         ...post,
         comment_count: post.comment_count[0].count,
         attachment_urls: post.attachment_urls as Post['attachment_urls'] || [],
         hashtags: post.hashtags || [],
-        profiles: post.profiles
+        profiles: {
+          username: post.profiles?.username || 'Unknown',
+          avatar_url: post.profiles?.avatar_url
+        }
       })) as Post[];
     },
   });
