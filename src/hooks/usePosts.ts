@@ -33,7 +33,7 @@ export const usePosts = () => {
         .select(`
           *,
           comment_count:comments(count),
-          profiles:user_id(username, avatar_url)
+          profiles!posts_user_id_fkey(username, avatar_url)
         `)
         .order('created_at', { ascending: false });
       

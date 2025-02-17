@@ -37,6 +37,7 @@ const PostsList = ({ posts, isLoading, error }: PostsListProps) => {
           commentCount={post.comment_count}
           hashtags={post.hashtags}
           attachments={post.attachment_urls}
+          profiles={post.profiles}
         />
       ))}
     </section>
