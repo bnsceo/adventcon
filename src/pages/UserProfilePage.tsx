@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -33,7 +32,7 @@ const UserProfilePage = () => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<Partial<Profile>>({});
 
-  // Check if user is authenticated and create profile if needed
+  // Check if user is authenticated and get session
   const { data: session } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
@@ -46,36 +45,41 @@ const UserProfilePage = () => {
     },
   });
 
+  // Fetch or create profile
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', session?.user.id],
     enabled: !!session?.user.id,
     queryFn: async () => {
       if (!session?.user.id) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase
+      // First try to fetch existing profile
+      const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
-        .select('*')
+        .select()
         .eq('id', session.user.id)
         .maybeSingle();
 
-      if (error) throw error;
+      if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
+
+      // If profile exists, return it
+      if (existingProfile) return existingProfile as Profile;
 
       // If no profile exists, create one
-      if (!data) {
-        const { data: newProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert([{
-            id: session.user.id,
-            username: session.user.email?.split('@')[0] || 'user',
-          }])
-          .select()
-          .single();
+      const newProfile = {
+        id: session.user.id,
+        username: session.user.email?.split('@')[0] || 'user',
+      };
 
-        if (createError) throw createError;
-        return newProfile as Profile;
-      }
+      const { data: createdProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert([newProfile])
+        .select()
+        .maybeSingle();
 
-      return data as Profile;
+      if (createError) throw createError;
+      if (!createdProfile) throw new Error('Failed to create profile');
+
+      return createdProfile as Profile;
     },
   });
 
@@ -129,6 +133,7 @@ const UserProfilePage = () => {
         description: "Failed to update profile. Please try again.",
         variant: "destructive",
       });
+      console.error('Profile update error:', error);
     },
   });
 
