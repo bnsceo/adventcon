@@ -33,7 +33,7 @@ export const usePosts = () => {
         .select(`
           *,
           comment_count:comments(count),
-          profiles:profiles!user_id(username, avatar_url)
+          profiles:profiles(username, avatar_url)
         `)
         .order('created_at', { ascending: false });
       
@@ -41,19 +41,16 @@ export const usePosts = () => {
       
       if (!data) return [];
       
-      return data.map(post => {
-        const postData = post as any; // temporary type assertion to handle the join
-        return {
-          ...post,
-          comment_count: postData.comment_count[0].count,
-          attachment_urls: postData.attachment_urls || [],
-          hashtags: postData.hashtags || [],
-          profiles: {
-            username: postData.profiles?.username || 'Unknown',
-            avatar_url: postData.profiles?.avatar_url
-          }
-        } as Post;
-      });
+      return data.map(post => ({
+        ...post,
+        comment_count: post.comment_count[0].count,
+        attachment_urls: post.attachment_urls as Post['attachment_urls'] || [],
+        hashtags: post.hashtags || [],
+        profiles: {
+          username: post.profiles?.username || 'Unknown',
+          avatar_url: post.profiles?.avatar_url
+        }
+      })) as Post[];
     },
   });
 
