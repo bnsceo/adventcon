@@ -31,16 +31,16 @@ const Navigation = () => {
   });
 
   const { data: profile } = useQuery({
-    queryKey: ['profile'],
-    enabled: !!session?.user.id,
+    queryKey: ['profile', session?.user?.id],
+    enabled: !!session?.user?.id,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('id', session?.user.id)
-        .single();
+        .select()
+        .eq('id', session.user.id)
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
   });
