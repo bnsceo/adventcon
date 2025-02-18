@@ -20,7 +20,7 @@ const DevotionalPage = () => {
       const { data, error } = await supabase
         .from('devotionals')
         .select('*')
-        .order('date', { ascending: true });
+        .order('date', { decending: true });
       
       if (error) throw error;
       return data as Devotional[];
