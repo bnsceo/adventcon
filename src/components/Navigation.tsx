@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Home, Users, Book, Settings, LogOut } from "lucide-react";
@@ -7,15 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-
 const Navigation = () => {
   const navigate = useNavigate();
   const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
     setIsClient(true);
   }, []);
-
   const {
     data: session
   } = useQuery({
@@ -29,7 +25,6 @@ const Navigation = () => {
       return session;
     }
   });
-
   const {
     data: profile
   } = useQuery({
@@ -44,21 +39,15 @@ const Navigation = () => {
       return data;
     }
   });
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
-
   return <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg border-b z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <img 
-              src="/lovable-uploads/00b41414-8bbd-4429-8523-69b9f2187845.png" 
-              alt="Adventist.com" 
-              className="h-8 w-auto"
-            />
+            <img alt="Adventist.com" src="/lovable-uploads/b6a287cd-b69a-48d6-bfd5-11ac1b6abdec.png" className="h-8 w-auto object-scale-down" />
           </Link>
           
           <div className="hidden md:flex items-center space-x-4">
@@ -105,5 +94,4 @@ const Navigation = () => {
       </div>
     </nav>;
 };
-
 export default Navigation;

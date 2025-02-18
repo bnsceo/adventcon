@@ -1,11 +1,9 @@
-
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import DevotionalCard from "@/components/DevotionalCard";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-
 const Index = () => {
   const navigate = useNavigate();
   const {
@@ -21,7 +19,6 @@ const Index = () => {
       return session;
     }
   });
-
   const handleJoinCommunity = () => {
     if (session) {
       navigate('/community');
@@ -29,18 +26,13 @@ const Index = () => {
       navigate('/auth');
     }
   };
-
   return <div className="min-h-screen bg-background">
       <Navigation />
       
       <main className="container mx-auto px-4 pt-24 pb-12">
         <section className="max-w-4xl mx-auto text-center mb-16 animate-fade-in">
           <div className="inline-block mb-4">
-            <img 
-              src="/lovable-uploads/00b41414-8bbd-4429-8523-69b9f2187845.png" 
-              alt="Adventist.com" 
-              className="h-24 w-auto"
-            />
+            <img alt="Adventist.com" className="h-24 w-auto object-fill" src="/lovable-uploads/569294dd-9e41-4cac-bbea-93e905b21a50.png" />
           </div>
           <h1 className="text-4xl font-bold mb-4">Faith and Community</h1>
           <p className="text-lg text-muted-foreground mb-8">Connect with fellow believers, share your journey, and grow together in Christ.</p>
@@ -76,5 +68,4 @@ const Index = () => {
       </main>
     </div>;
 };
-
 export default Index;
