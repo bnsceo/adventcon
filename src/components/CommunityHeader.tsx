@@ -1,24 +1,16 @@
-
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
 import CreatePostDialog from "./CreatePostDialog";
-
 interface CommunityHeaderProps {
   onCreatePost: (title: string, content: string, files: File[]) => Promise<void>;
 }
-
-const CommunityHeader = ({ onCreatePost }: CommunityHeaderProps) => {
-  return (
-    <section className="max-w-4xl mx-auto text-center mb-12 animate-fade-in">
+const CommunityHeader = ({
+  onCreatePost
+}: CommunityHeaderProps) => {
+  return <section className="max-w-4xl mx-auto text-center mb-12 animate-fade-in">
       {/* Logo placement - Replace src with your actual logo path */}
-      <img 
-        src="/placeholder.svg" 
-        alt="Adventist Connect Logo" 
-        className="w-24 h-24 mx-auto mb-4"
-      />
-      <div className="inline-block p-2 bg-primary/10 rounded-full mb-4">
-        <Users className="w-6 h-6 text-primary" />
-      </div>
+      <img alt="Adventist Connect Logo" className="w-24 h-24 mx-auto mb-4" src="/lovable-uploads/1db8b74d-5f2a-4fc9-9966-ee4ad52f324f.png" />
+      
       <h1 className="text-4xl font-bold mb-4">
         Community
       </h1>
@@ -26,8 +18,6 @@ const CommunityHeader = ({ onCreatePost }: CommunityHeaderProps) => {
         Share your faith journey and connect with fellow believers
       </p>
       <CreatePostDialog onCreatePost={onCreatePost} />
-    </section>
-  );
+    </section>;
 };
-
 export default CommunityHeader;
