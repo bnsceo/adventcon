@@ -47,7 +47,7 @@ export const usePosts = () => {
       return (data as any[]).map(post => ({
         ...post,
         attachment_urls: Array.isArray(post.attachment_urls) ? post.attachment_urls : [],
-        comment_count: post.comment_count || 0
+        comment_count: 0 // Initialize with 0 since it's not in the database yet
       })) as Post[];
     },
   });
@@ -93,7 +93,6 @@ export const usePosts = () => {
         hashtags,
         attachment_urls,
         user_id: session.user.id,
-        comment_count: 0,
         like_count: 0
       };
 
@@ -122,7 +121,7 @@ export const usePosts = () => {
         attachment_urls: Array.isArray(data.attachment_urls) ? data.attachment_urls : [],
         hashtags: Array.isArray(data.hashtags) ? data.hashtags : [],
         like_count: data.like_count || 0,
-        comment_count: data.comment_count || 0,
+        comment_count: 0, // Initialize with 0 since it's not in the database yet
         profiles: {
           id: data.profiles.id,
           username: data.profiles.username,
