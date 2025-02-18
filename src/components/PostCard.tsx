@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -18,7 +19,11 @@ interface PostCardProps {
   createdAt: string;
   commentCount?: number;
   hashtags?: string[];
-  attachments?: string[];
+  attachments?: {
+    url: string;
+    type: string;
+    name: string;
+  }[];
   profiles: Profiles;
   likeCount?: number;
 }
@@ -78,6 +83,21 @@ const PostCard = ({
               <span key={tag} className="inline-block bg-secondary text-secondary-foreground px-2 py-1 mr-2 text-xs rounded-full">
                 {tag}
               </span>
+            ))}
+          </div>
+        )}
+        {attachments.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {attachments.map((attachment) => (
+              <a
+                key={attachment.url}
+                href={attachment.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-primary hover:underline"
+              >
+                {attachment.name}
+              </a>
             ))}
           </div>
         )}

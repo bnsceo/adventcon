@@ -86,17 +86,20 @@ export const usePosts = () => {
         });
       }
 
+      // Create post with initial values
+      const newPost = {
+        title,
+        content,
+        hashtags,
+        attachment_urls,
+        user_id: session.user.id,
+        comment_count: 0,
+        like_count: 0
+      };
+
       const { data, error } = await supabase
         .from('posts')
-        .insert([
-          {
-            title,
-            content,
-            hashtags,
-            attachment_urls,
-            user_id: session.user.id
-          }
-        ])
+        .insert([newPost])
         .select(`
           *,
           profiles (
@@ -108,7 +111,13 @@ export const usePosts = () => {
         .single();
 
       if (error) throw error;
-      return data as Post;
+      
+      // Transform the returned data to match our Post interface
+      return {
+        ...data,
+        attachment_urls: data.attachment_urls || [],
+        comment_count: 0
+      } as Post;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
