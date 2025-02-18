@@ -46,7 +46,7 @@ export const usePosts = () => {
       // Transform the data to match our Post interface
       return (data as any[]).map(post => ({
         ...post,
-        attachment_urls: post.attachment_urls || [],
+        attachment_urls: Array.isArray(post.attachment_urls) ? post.attachment_urls : [],
         comment_count: post.comment_count || 0
       })) as Post[];
     },
@@ -112,11 +112,22 @@ export const usePosts = () => {
 
       if (error) throw error;
       
-      // Transform the returned data to match our Post interface
+      // Explicitly transform the returned data to match our Post interface
       return {
-        ...data,
-        attachment_urls: data.attachment_urls || [],
-        comment_count: 0
+        id: data.id,
+        title: data.title,
+        content: data.content,
+        created_at: data.created_at,
+        user_id: data.user_id,
+        attachment_urls: Array.isArray(data.attachment_urls) ? data.attachment_urls : [],
+        hashtags: Array.isArray(data.hashtags) ? data.hashtags : [],
+        like_count: data.like_count || 0,
+        comment_count: data.comment_count || 0,
+        profiles: {
+          id: data.profiles.id,
+          username: data.profiles.username,
+          avatar_url: data.profiles.avatar_url
+        }
       } as Post;
     },
     onSuccess: () => {
