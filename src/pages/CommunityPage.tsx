@@ -5,7 +5,7 @@ import PostsList from "@/components/PostsList";
 import { usePosts } from "@/hooks/usePosts";
 
 const CommunityPage = () => {
-  const { posts, isLoading, error, createPost } = usePosts();
+  const { data: posts, isLoading, error, createPost } = usePosts();
 
   const handleCreatePost = async (title: string, content: string, files: File[]) => {
     const hashtagRegex = /#[\w]+/g;
