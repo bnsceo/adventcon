@@ -74,6 +74,42 @@ export type Database = {
         }
         Relationships: []
       }
+      likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           attachment_urls: Json | null
@@ -81,6 +117,7 @@ export type Database = {
           created_at: string | null
           hashtags: string[] | null
           id: string
+          like_count: number | null
           title: string
           updated_at: string | null
           user_id: string
@@ -91,6 +128,7 @@ export type Database = {
           created_at?: string | null
           hashtags?: string[] | null
           id?: string
+          like_count?: number | null
           title: string
           updated_at?: string | null
           user_id: string
@@ -101,6 +139,7 @@ export type Database = {
           created_at?: string | null
           hashtags?: string[] | null
           id?: string
+          like_count?: number | null
           title?: string
           updated_at?: string | null
           user_id?: string

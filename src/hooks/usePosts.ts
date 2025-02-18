@@ -10,6 +10,7 @@ type Post = {
   created_at: string;
   user_id: string;
   comment_count: number;
+  like_count: number;
   hashtags: string[];
   attachment_urls: {
     url: string;
