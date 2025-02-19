@@ -1,14 +1,21 @@
-
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Navigation from "@/components/Navigation";
 import CommunityHeader from "@/components/CommunityHeader";
 import PostsList from "@/components/PostsList";
 import { usePosts } from "@/hooks/usePosts";
 import { useToast } from "@/components/ui/use-toast";
+import SearchBar from "@/components/SearchBar"; // new search component
+import LoadingSpinner from "@/components/LoadingSpinner"; // new loading component
 
 const CommunityPage = () => {
   const { data: posts, isLoading, error, createPost } = usePosts();
   const { toast } = useToast();
+
+  // Memoize hashtag extraction if posts are large or frequently updated
+  const extractHashtags = (content: string) => {
+    const hashtagRegex = /#[\w]+/g;
+    return content.match(hashtagRegex)?.map(tag => tag.slice(1)) || [];
+  };
 
   useEffect(() => {
     if (error) {
@@ -24,7 +31,6 @@ const CommunityPage = () => {
     try {
       const hashtags = extractHashtags(content);
       await createPost.mutateAsync({ title, content, hashtags, files });
-
       toast({
         title: "Success",
         description: "Your post has been published!",
@@ -39,18 +45,27 @@ const CommunityPage = () => {
     }
   };
 
-  const extractHashtags = (content: string) => {
-    const hashtagRegex = /#[\w]+/g;
-    return content.match(hashtagRegex)?.map(tag => tag.slice(1)) || [];
-  };
+  // Example of adding search functionality:
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredPosts = useMemo(
+    () =>
+      posts?.filter(post =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase())
+      ) || [],
+    [posts, searchTerm]
+  );
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
       <main className="container mx-auto px-4 pt-24 pb-12">
         <CommunityHeader onCreatePost={handleCreatePost} />
-        <PostsList posts={posts} isLoading={isLoading} error={error} />
+        <SearchBar value={searchTerm} onChange={setSearchTerm} />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <PostsList posts={filteredPosts} error={error} />
+        )}
       </main>
     </div>
   );
