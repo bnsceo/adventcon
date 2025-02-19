@@ -50,7 +50,7 @@ const PostCard = ({
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
     return imageExtensions.some(ext => url.toLowerCase().endsWith(ext));
   };
-  return <Card className="mb-4">
+  return <Card className="mb-4 px-0">
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-3 mb-2">
           <Link to={`/profile/${profiles.username}`}>
@@ -72,7 +72,7 @@ const PostCard = ({
         </div>
         <h3 className="text-xl font-semibold">{title}</h3>
       </CardHeader>
-      <CardContent className="py-4 mx-[59px]">
+      <CardContent className="mx-[55px] py-0">
         <p className="text-muted-foreground whitespace-pre-wrap text-center font-medium text-lg">{content}</p>
         
         {attachments.length > 0 && <div className="mt-4 space-y-4 mx-[111px] rounded-none">
@@ -87,7 +87,7 @@ const PostCard = ({
               </span>)}
           </div>}
       </CardContent>
-      <CardFooter className="flex justify-between items-center">
+      <CardFooter className="flex justify-between items-center px-[201px]">
         <div className="flex items-center space-x-4 text-muted-foreground">
           <button onClick={handleLike} className="hover:text-primary transition-colors duration-200">
             <Heart className="h-4 w-4 mr-1 inline-block" />
