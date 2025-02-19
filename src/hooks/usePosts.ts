@@ -1,6 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
 export interface Post {
   id: string;
@@ -112,16 +113,18 @@ export const usePosts = () => {
       console.log('Files uploaded, creating post...');
 
       // Create post with initial values
+      const postData = {
+        title,
+        content,
+        hashtags,
+        attachment_urls: attachment_urls as unknown as Json,
+        user_id: session.user.id,
+        like_count: 0
+      };
+
       const { data, error } = await supabase
         .from('posts')
-        .insert([{
-          title,
-          content,
-          hashtags,
-          attachment_urls,
-          user_id: session.user.id,
-          like_count: 0
-        }])
+        .insert([postData])
         .select(`
           *,
           profiles (
