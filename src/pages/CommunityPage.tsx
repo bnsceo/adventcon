@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import CommunityHeader from "@/components/CommunityHeader";
@@ -19,10 +20,9 @@ const CommunityPage = () => {
     }
   }, [error, toast]);
 
-  const handleCreatePost = async (title, content, files) => {
+  const handleCreatePost = async (title: string, content: string, files: File[]) => {
     try {
-      const hashtags = extractHashtags(content); // Extract hashtags using a dedicated function
-
+      const hashtags = extractHashtags(content);
       await createPost.mutateAsync({ title, content, hashtags, files });
 
       toast({
@@ -30,7 +30,7 @@ const CommunityPage = () => {
         description: "Your post has been published!",
       });
     } catch (err) {
-      console.error("Error creating post:", err); // Log the error for debugging
+      console.error("Error creating post:", err);
       toast({
         title: "Error",
         description: "Failed to create post. Please try again.",
@@ -39,8 +39,7 @@ const CommunityPage = () => {
     }
   };
 
-  // Dedicated function for hashtag extraction (Improves readability and testability)
-  const extractHashtags = (content) => {
+  const extractHashtags = (content: string) => {
     const hashtagRegex = /#[\w]+/g;
     return content.match(hashtagRegex)?.map(tag => tag.slice(1)) || [];
   };
@@ -48,9 +47,9 @@ const CommunityPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-
+      
       <main className="container mx-auto px-4 pt-24 pb-12">
-        <CommunityHeader onCreatePost={handleCreatePost} isLoading={createPost.isLoading} /> {/* Pass loading state */}
+        <CommunityHeader onCreatePost={handleCreatePost} />
         <PostsList posts={posts} isLoading={isLoading} error={error} />
       </main>
     </div>
