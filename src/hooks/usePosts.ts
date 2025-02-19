@@ -41,13 +41,17 @@ export const usePosts = () => {
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching posts:', error);
+        throw error;
+      }
       
-      // Transform the data to match our Post interface
       return (data as any[]).map(post => ({
         ...post,
         attachment_urls: Array.isArray(post.attachment_urls) ? post.attachment_urls : [],
-        comment_count: 0 // Initialize with 0 since it's not in the database yet
+        hashtags: Array.isArray(post.hashtags) ? post.hashtags : [],
+        comment_count: post.comment_count || 0,
+        like_count: post.like_count || 0
       })) as Post[];
     },
   });
@@ -62,6 +66,8 @@ export const usePosts = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('Not authenticated');
 
+      console.log('Creating post with:', { title, content, hashtags, files });
+
       // Upload files if any
       const attachment_urls = [];
       for (const file of files) {
@@ -69,11 +75,16 @@ export const usePosts = () => {
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `posts/${fileName}`;
 
+        console.log('Uploading file:', filePath);
+
         const { error: uploadError } = await supabase.storage
           .from('attachments')
           .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error('File upload error:', uploadError);
+          throw uploadError;
+        }
 
         const { data: { publicUrl } } = supabase.storage
           .from('attachments')
@@ -86,19 +97,19 @@ export const usePosts = () => {
         });
       }
 
-      // Create post with initial values
-      const newPost = {
-        title,
-        content,
-        hashtags,
-        attachment_urls,
-        user_id: session.user.id,
-        like_count: 0
-      };
+      console.log('Files uploaded, creating post...');
 
+      // Create post with initial values
       const { data, error } = await supabase
         .from('posts')
-        .insert([newPost])
+        .insert([{
+          title,
+          content,
+          hashtags,
+          attachment_urls,
+          user_id: session.user.id,
+          like_count: 0
+        }])
         .select(`
           *,
           profiles (
@@ -109,24 +120,19 @@ export const usePosts = () => {
         `)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Post creation error:', error);
+        throw error;
+      }
+
+      console.log('Post created successfully:', data);
       
-      // Explicitly transform the returned data to match our Post interface
       return {
-        id: data.id,
-        title: data.title,
-        content: data.content,
-        created_at: data.created_at,
-        user_id: data.user_id,
+        ...data,
         attachment_urls: Array.isArray(data.attachment_urls) ? data.attachment_urls : [],
         hashtags: Array.isArray(data.hashtags) ? data.hashtags : [],
-        like_count: data.like_count || 0,
-        comment_count: 0, // Initialize with 0 since it's not in the database yet
-        profiles: {
-          id: data.profiles.id,
-          username: data.profiles.username,
-          avatar_url: data.profiles.avatar_url
-        }
+        comment_count: 0,
+        like_count: 0
       } as Post;
     },
     onSuccess: () => {
