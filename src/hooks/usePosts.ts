@@ -23,6 +23,12 @@ export interface Post {
   };
 }
 
+interface AttachmentUrl {
+  url: string;
+  type: string;
+  name: string;
+}
+
 export const usePosts = () => {
   const queryClient = useQueryClient();
 
@@ -48,7 +54,13 @@ export const usePosts = () => {
       
       return (data as any[]).map(post => ({
         ...post,
-        attachment_urls: Array.isArray(post.attachment_urls) ? post.attachment_urls : [],
+        attachment_urls: Array.isArray(post.attachment_urls) 
+          ? post.attachment_urls.map((url: any) => ({
+              url: url.url || '',
+              type: url.type || '',
+              name: url.name || ''
+            }))
+          : [],
         hashtags: Array.isArray(post.hashtags) ? post.hashtags : [],
         comment_count: post.comment_count || 0,
         like_count: post.like_count || 0
@@ -69,7 +81,7 @@ export const usePosts = () => {
       console.log('Creating post with:', { title, content, hashtags, files });
 
       // Upload files if any
-      const attachment_urls = [];
+      const attachment_urls: AttachmentUrl[] = [];
       for (const file of files) {
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
@@ -127,13 +139,27 @@ export const usePosts = () => {
 
       console.log('Post created successfully:', data);
       
-      return {
+      // Transform the data to match the Post interface
+      const transformedData: Post = {
         ...data,
-        attachment_urls: Array.isArray(data.attachment_urls) ? data.attachment_urls : [],
+        attachment_urls: Array.isArray(data.attachment_urls)
+          ? data.attachment_urls.map((url: any) => ({
+              url: url.url || '',
+              type: url.type || '',
+              name: url.name || ''
+            }))
+          : [],
         hashtags: Array.isArray(data.hashtags) ? data.hashtags : [],
         comment_count: 0,
-        like_count: 0
-      } as Post;
+        like_count: data.like_count || 0,
+        profiles: {
+          id: data.profiles.id,
+          username: data.profiles.username,
+          avatar_url: data.profiles.avatar_url
+        }
+      };
+
+      return transformedData;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
