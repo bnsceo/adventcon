@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Home, Users, Book, Settings, LogOut, Menu, X } from "lucide-react";
@@ -8,45 +7,44 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
 const Navigation = () => {
   const navigate = useNavigate();
   const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  const { data: session } = useQuery({
+  const {
+    data: session
+  } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
       return session;
     }
   });
-
-  const { data: profile } = useQuery({
+  const {
+    data: profile
+  } = useQuery({
     queryKey: ['profile', session?.user?.id],
     enabled: !!session?.user?.id,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select()
-        .eq('id', session.user.id)
-        .maybeSingle();
-
+      const {
+        data,
+        error
+      } = await supabase.from('profiles').select().eq('id', session.user.id).maybeSingle();
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     }
   });
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
   };
-
-  const NavLinks = () => (
-    <>
+  const NavLinks = () => <>
       <Link to="/" className="nav-link">
         <Home className="w-4 h-4 mr-2 inline-block" />
         Home
@@ -59,16 +57,10 @@ const Navigation = () => {
         <Book className="w-4 h-4 mr-2 inline-block" />
         Devotional
       </Link>
-    </>
-  );
-
-  const UserMenu = () => (
-    isClient && !session ? (
-      <Button onClick={() => navigate('/auth')}>
+    </>;
+  const UserMenu = () => isClient && !session ? <Button onClick={() => navigate('/auth')}>
         Sign In
-      </Button>
-    ) : (
-      <DropdownMenu>
+      </Button> : <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
@@ -90,20 +82,12 @@ const Navigation = () => {
             <span>Sign out</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
-    )
-  );
-
-  return (
-    <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg border-b z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      </DropdownMenu>;
+  return <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg border-b z-50">
+      <div className="container mx-auto px-0">
+        <div className="flex items-center justify-between h-16 px-0">
           <Link to="/" className="flex items-center space-x-2">
-            <img 
-              alt="Adventist.com" 
-              src="/lovable-uploads/b6a287cd-b69a-48d6-bfd5-11ac1b6abdec.png" 
-              className="h-8 w-auto object-scale-down" 
-            />
+            <img alt="Adventist.com" src="/lovable-uploads/b6a287cd-b69a-48d6-bfd5-11ac1b6abdec.png" className="h-8 w-auto object-scale-down" />
           </Link>
           
           {/* Desktop Navigation */}
@@ -132,8 +116,6 @@ const Navigation = () => {
           </div>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
-
 export default Navigation;
