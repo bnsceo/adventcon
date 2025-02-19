@@ -87,7 +87,7 @@ const PostCard = ({
               </span>)}
           </div>}
       </CardContent>
-      <CardFooter className="flex justify-between items-center px-[201px]">
+      <CardFooter className="flex justify-between items-center px-0">
         <div className="flex items-center space-x-4 text-muted-foreground">
           <button onClick={handleLike} className="hover:text-primary transition-colors duration-200">
             <Heart className="h-4 w-4 mr-1 inline-block" />
