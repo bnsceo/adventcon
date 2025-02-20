@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { Bell, BookOpen, Home, MessageCircle, Search, Share2, ThumbsUp, User, Users } from "lucide-react";
 import { usePosts } from "@/hooks/usePosts";
@@ -5,11 +6,36 @@ import { useToast } from "@/components/ui/use-toast";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PostsList from "@/components/PostsList";
 import CommunityHeader from "@/components/CommunityHeader";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const CommunityPage = () => {
-  const { data: posts, isLoading, error, createPost } = usePosts();
+const UserProfilePage = () => {
+  const { data: posts, isLoading: postsLoading, error, createPost } = usePosts();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: session } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session;
+    }
+  });
+
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ['profile', session?.user?.id],
+    enabled: !!session?.user?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', session.user.id)
+        .single();
+      return data;
+    }
+  });
+
+  const isLoading = postsLoading || profileLoading;
 
   const extractHashtags = (content: string) => {
     const hashtagRegex = /#[\w]+/g;
@@ -146,4 +172,4 @@ const CommunityPage = () => {
   );
 };
 
-export default CommunityPage;
+export default UserProfilePage;
