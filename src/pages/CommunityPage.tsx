@@ -343,20 +343,31 @@ const AdventistFeed: React.FC = () => {
                 />
               </div>
 
-              {/* Content Tabs */}
-              <Tabs defaultValue="forYou" className="w-full" onValueChange={setActiveTab}>
-                <TabsList className="bg-white rounded-xl shadow-sm p-1 w-full">
-                  <TabsTrigger value="forYou" className="flex-1 data-[state=active]:bg-[#E9EFF9] data-[state=active]:text-[#1C3F7B]">
-                    For You
-                  </TabsTrigger>
-                  <TabsTrigger value="bible" className="flex-1 data-[state=active]:bg-[#E9EFF9] data-[state=active]:text-[#1C3F7B]">
-                    Bible
-                  </TabsTrigger>
-                  <TabsTrigger value="fellowship" className="flex-1 data-[state=active]:bg-[#E9EFF9] data-[state=active]:text-[#1C3F7B]">
-                    Fellowship
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
+              {/* Content Tabs - FIXED COLOR STYLING */}
+              <div className="bg-white rounded-xl shadow-sm">
+                <Tabs defaultValue="forYou" className="w-full" onValueChange={setActiveTab}>
+                  <TabsList className="w-full bg-transparent p-0 h-auto flex">
+                    <TabsTrigger 
+                      value="forYou" 
+                      className="flex-1 py-3 rounded-none text-gray-600 border-b-2 border-transparent data-[state=active]:border-[#1C3F7B] data-[state=active]:text-[#1C3F7B] data-[state=active]:bg-transparent data-[state=active]:font-medium transition-all"
+                    >
+                      For You
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="bible" 
+                      className="flex-1 py-3 rounded-none text-gray-600 border-b-2 border-transparent data-[state=active]:border-[#1C3F7B] data-[state=active]:text-[#1C3F7B] data-[state=active]:bg-transparent data-[state=active]:font-medium transition-all"
+                    >
+                      Bible
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="fellowship" 
+                      className="flex-1 py-3 rounded-none text-gray-600 border-b-2 border-transparent data-[state=active]:border-[#1C3F7B] data-[state=active]:text-[#1C3F7B] data-[state=active]:bg-transparent data-[state=active]:font-medium transition-all"
+                    >
+                      Fellowship
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
 
               {/* Create Post Card */}
               <div className="bg-white rounded-xl shadow-sm p-4">
