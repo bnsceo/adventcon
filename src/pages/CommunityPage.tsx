@@ -96,7 +96,7 @@ const CommunityPage = () => {
                     />
                   </div>
                   <h2 className="text-lg font-semibold mb-1">{profile?.username}</h2>
-                  <p className="text-sm text-muted-foreground mb-4">{profile?.role || "Community Member"}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{profile?.church_role || "Community Member"}</p>
                 </div>
                 
                 <div className="grid grid-cols-3 gap-4 py-4 border-y">
