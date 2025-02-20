@@ -7,7 +7,7 @@ interface CommunityHeaderProps {
 const CommunityHeader = ({
   onCreatePost
 }: CommunityHeaderProps) => {
-  return <section className="max-w-4xl mx-auto text-center mb-12 animate-fade-in">
+  return <section className="max-w-4xl mx-auto text-center mb-12 animate-fade-in bg-zinc-50">
       {/* Logo placement - Replace src with your actual logo path */}
       <img alt="Adventist Connect Logo" className="w-24 h-24 mx-auto mb-4" src="/lovable-uploads/1db8b74d-5f2a-4fc9-9966-ee4ad52f324f.png" />
       
