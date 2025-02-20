@@ -129,7 +129,7 @@ const PostCard = ({
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
     return imageExtensions.some(ext => url.toLowerCase().endsWith(ext));
   };
-  return <Card className="mb-4 px-px">
+  return <Card className="mb-4 px-0">
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-3 mb-2">
           <Link to={`/profile/${profiles.username}`}>
@@ -154,8 +154,8 @@ const PostCard = ({
       <CardContent className="py-0 px-[38px]">
         <p className="text-muted-foreground whitespace-pre-wrap">{content}</p>
         
-        {attachments.length > 0 && <div className="mt-4 flex flex-col items-center gap-4">
-            {attachments.map((attachment, index) => isImageUrl(attachment.url) ? <img key={index} src={attachment.url} alt={attachment.name} loading="lazy" className="rounded-md max-h-[512px] w-auto object-contain mx-auto" /> : <a key={index} href={attachment.url} target="_blank" rel="noopener noreferrer" className="block text-primary hover:underline">
+        {attachments.length > 0 && <div className="mt-4 flex flex-col items-center gap-4 my-0 py-[7px] mx-0 px-[18px] ">
+            {attachments.map((attachment, index) => isImageUrl(attachment.url) ? <img key={index} src={attachment.url} alt={attachment.name} loading="lazy" className="rounded-md max-h-600px w-760 mx-auto object-contain" /> : <a key={index} href={attachment.url} target="_blank" rel="noopener noreferrer" className="block text-primary hover:underline">
                   {attachment.name}
                 </a>)}
           </div>}
