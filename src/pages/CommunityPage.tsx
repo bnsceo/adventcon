@@ -1,11 +1,12 @@
-import { useEffect, useMemo } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import Navigation from "@/components/Navigation";
 import CommunityHeader from "@/components/CommunityHeader";
 import PostsList from "@/components/PostsList";
 import { usePosts } from "@/hooks/usePosts";
 import { useToast } from "@/components/ui/use-toast";
-import SearchBar from "@/components/SearchBar"; // new search component
-import LoadingSpinner from "@/components/LoadingSpinner"; // new loading component
+import SearchBar from "@/components/SearchBar";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const CommunityPage = () => {
   const { data: posts, isLoading, error, createPost } = usePosts();
@@ -45,7 +46,6 @@ const CommunityPage = () => {
     }
   };
 
-  // Example of adding search functionality:
   const [searchTerm, setSearchTerm] = useState("");
   const filteredPosts = useMemo(
     () =>
