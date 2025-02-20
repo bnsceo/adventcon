@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -10,7 +11,8 @@
     --color-foreground: hsl(222, 84%, 5%);
     --color-card: hsl(0, 0%, 100%);
     --color-card-foreground: hsl(222, 84%, 5%);
-    --color-primary: hsl(220, 90%, 55%);
+    --color-primary: 220 90% 55%;
+    --color-primary-hover: 220 90% 50%;
     --radius: 0.75rem;
     --transition: 0.2s ease-in-out;
   }
@@ -22,7 +24,8 @@
       --color-foreground: hsl(0, 0%, 100%);
       --color-card: hsl(222, 22%, 18%);
       --color-card-foreground: hsl(0, 0%, 100%);
-      --color-primary: hsl(220, 90%, 65%);
+      --color-primary: 220 90% 65%;
+      --color-primary-hover: 220 90% 60%;
     }
   }
 
@@ -42,8 +45,7 @@
 
   /* Custom selection styling */
   ::selection {
-    background-color: var(--color-primary);
-    color: var(--color-background);
+    @apply bg-primary text-[color:var(--color-background)];
   }
 }
 
@@ -55,14 +57,14 @@
   .nav-link {
     @apply px-4 py-2 rounded-md text-sm font-medium transition-colors;
     &:hover {
-      @apply bg-[color:var(--color-primary)]/10 text-[color:var(--color-primary)];
+      @apply bg-primary/10 text-primary;
     }
   }
 
   .btn-primary {
-    @apply px-4 py-2 rounded-md bg-[color:var(--color-primary)] text-white font-medium transition-transform duration-200;
+    @apply px-4 py-2 rounded-md bg-primary text-white font-medium transition-transform duration-200;
     &:hover {
-      @apply bg-[color:var(--color-primary)]/90;
+      @apply bg-primary/90;
     }
     &:active {
       @apply scale-95;
