@@ -85,7 +85,7 @@ const Navigation = () => {
       </DropdownMenu>;
   return <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-lg border-b z-50">
       <div className="container mx-auto px-0">
-        <div className="flex items-center justify-between h-16 px-0">
+        <div className="flex items-center justify-between h-16 px-[22px]">
           <Link to="/" className="flex items-center space-x-2">
             <img alt="Adventist.com" src="/lovable-uploads/b6a287cd-b69a-48d6-bfd5-11ac1b6abdec.png" className="h-8 w-auto object-scale-down" />
           </Link>
