@@ -11,7 +11,7 @@ interface PostsListProps {
 const PostsList = ({ posts, isLoading, error }: PostsListProps) => {
   if (isLoading) {
     return (
-      <div className="max-w-2xl mx-auto text-center text-muted-foreground">
+      <div className="text-center text-muted-foreground">
         Loading posts...
       </div>
     );
@@ -19,15 +19,23 @@ const PostsList = ({ posts, isLoading, error }: PostsListProps) => {
 
   if (error) {
     return (
-      <div className="max-w-2xl mx-auto text-center text-red-500">
+      <div className="bg-white rounded-lg shadow-sm p-6 text-center text-red-500">
         Error loading posts. Please try again later.
       </div>
     );
   }
 
+  if (!posts?.length) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm p-6 text-center text-muted-foreground">
+        No posts found. Be the first to share something!
+      </div>
+    );
+  }
+
   return (
-    <section className="max-w-2xl mx-auto">
-      {posts?.map((post) => (
+    <div className="space-y-4">
+      {posts.map((post) => (
         <PostCard
           key={post.id}
           id={post.id}
@@ -41,7 +49,7 @@ const PostsList = ({ posts, isLoading, error }: PostsListProps) => {
           likeCount={post.like_count}
         />
       ))}
-    </section>
+    </div>
   );
 };
 

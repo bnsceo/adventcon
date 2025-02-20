@@ -56,21 +56,59 @@ const CommunityPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#F1F0FB]">
       <Navigation />
-      <main className="container mx-auto px-4 pt-24 pb-12">
-        <CommunityHeader onCreatePost={handleCreatePost} />
-        <SearchBar value={searchTerm} onChange={setSearchTerm} />
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <PostsList 
-            posts={filteredPosts} 
-            error={error}
-            isLoading={isLoading}
-          />
-        )}
-      </main>
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-24 pb-12">
+          {/* Left Sidebar - Can be used for user profile or categories */}
+          <aside className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24 space-y-6">
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="font-semibold text-lg mb-4">Community Guidelines</h3>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                  <li>• Share uplifting content</li>
+                  <li>• Be respectful and kind</li>
+                  <li>• Support fellow believers</li>
+                </ul>
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="lg:col-span-6">
+            <div className="space-y-6">
+              <CommunityHeader onCreatePost={handleCreatePost} />
+              <SearchBar value={searchTerm} onChange={setSearchTerm} />
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <PostsList 
+                  posts={filteredPosts} 
+                  error={error}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
+          </main>
+
+          {/* Right Sidebar - Trending topics or announcements */}
+          <aside className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24 space-y-6">
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="font-semibold text-lg mb-4">Trending Topics</h3>
+                <div className="space-y-3">
+                  {['Prayer', 'Bible Study', 'Mission', 'Health'].map((topic) => (
+                    <div key={topic} className="text-sm">
+                      <p className="font-medium text-primary">{`#${topic}`}</p>
+                      <p className="text-muted-foreground text-xs">Growing discussion</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
     </div>
   );
 };
