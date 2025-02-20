@@ -151,8 +151,8 @@ const PostCard = ({
         </div>
         <h3 className="text-xl font-semibold">{title}</h3>
       </CardHeader>
-      <CardContent className="py-0 px-[38px]">
-        <p className="text-muted-foreground whitespace-pre-wrap">{content}</p>
+      <CardContent className="py-0 px-0">
+        <p className="text-muted-foreground whitespace-pre-wrap px-[10px]">{content}</p>
         
         {attachments.length > 0 && <div className="mt-4 flex flex-col items-center gap-4 my-0 py-[7px] mx-0 px-[18px] ">
             {attachments.map((attachment, index) => isImageUrl(attachment.url) ? <img key={index} src={attachment.url} alt={attachment.name} loading="lazy" className="rounded-md max-h-600px w-760 mx-auto object-contain" /> : <a key={index} href={attachment.url} target="_blank" rel="noopener noreferrer" className="block text-primary hover:underline">

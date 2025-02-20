@@ -57,7 +57,7 @@ const CommunityPage = () => {
   const filteredPosts = useMemo(() => posts?.filter(post => post.title.toLowerCase().includes(searchTerm.toLowerCase())) || [], [posts, searchTerm]);
   return <div className="min-h-screen bg-[#F1F0FB]">
       <Navigation />
-      <div className="container mx-auto lg:px-8 px-[129px]">
+      <div className="container mx-auto lg:px-8 px-[6px]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-24 pb-12">
           {/* Left Sidebar - Can be used for user profile or categories */}
           <aside className="hidden lg:block lg:col-span-3">
