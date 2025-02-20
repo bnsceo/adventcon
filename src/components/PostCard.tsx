@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageSquare, Share2, User, Ban } from 'lucide-react';
+import { Heart, MessageSquare, Share2, User } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -50,16 +50,25 @@ const PostCard = ({
   // Handle like functionality
   const likeMutation = useMutation({
     mutationFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('You must be logged in to like posts');
+      }
+
       if (isLiked) {
         const { error } = await supabase
           .from('likes')
           .delete()
-          .eq('post_id', id);
+          .eq('post_id', id)
+          .eq('user_id', session.user.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('likes')
-          .insert([{ post_id: id }]);
+          .insert([{ 
+            post_id: id,
+            user_id: session.user.id
+          }]);
         if (error) throw error;
       }
     },
@@ -70,7 +79,7 @@ const PostCard = ({
     onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to update like. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to update like. Please try again.",
         variant: "destructive",
       });
       console.error('Error updating like:', error);
