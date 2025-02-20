@@ -64,7 +64,11 @@ const CommunityPage = () => {
         {isLoading ? (
           <LoadingSpinner />
         ) : (
-          <PostsList posts={filteredPosts} error={error} />
+          <PostsList 
+            posts={filteredPosts} 
+            error={error}
+            isLoading={isLoading}
+          />
         )}
       </main>
     </div>
